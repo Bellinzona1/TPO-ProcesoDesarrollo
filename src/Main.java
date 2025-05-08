@@ -4,6 +4,7 @@ import restaurante.model.Pedido;
 import restaurante.model.Producto;
 import restaurante.service.FacturaService;
 import restaurante.service.NotificacionService;
+import java.util.Arrays;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -12,8 +13,8 @@ public class Main {
 
         Cliente cliente = new Cliente(1, "Juan", "juan@example.com");
         Pedido pedido = new Pedido(1, cliente);
-        Producto producto1 = new Producto("P001", "Pizza", "Pizza de jamón", 5000.0);
-        Producto producto2 = new Producto("P002", "Coca", "Coca Cola", 2000.0);
+        Producto producto1 = new Producto("P001", "Pizza", "Pizza de jamón", 5000.0, Arrays.asList("Gluten", "Lácteos"));
+        Producto producto2 = new Producto("P002", "Coca", "Coca Cola", 2000.0, Arrays.asList());
         pedido.agregarProducto(producto1);
         pedido.agregarProducto(producto2);
 
@@ -31,7 +32,7 @@ public class Main {
 
         // Mostrar el total del pedido
         double total = pedido.calcularTotal();
-        System.out.println("El total del pedido es: " + total);
+        System.out.println("El total del pedido es: $" + total);
 
     }
 
