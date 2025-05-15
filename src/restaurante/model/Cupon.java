@@ -4,6 +4,11 @@ public class Cupon {
     private String codigo;
     private double descuento;
 
+    public Cupon(String codigo, double descuento) {
+        this.codigo = codigo;
+        this.descuento = descuento;
+    }
+
     public void aplicarDescuento(Pedido pedido) {
         if (pedido != null && descuento > 0) {
             double nuevoTotal = Math.max(0, pedido.getTotal() - descuento); // Evitar totales negativos

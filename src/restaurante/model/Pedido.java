@@ -54,10 +54,10 @@ public class Pedido {
     public void generarFactura() {
         // Asegurarse de que el total esté actualizado antes de generar la factura
         calcularTotal();
-        
+
         // Crear una factura a partir del pedido
         factura = new Factura(this);
-        
+
         // Generar el PDF y enviarlo por correo
         factura.generarPDF();
         factura.enviarPorEmail();

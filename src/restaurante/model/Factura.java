@@ -23,8 +23,8 @@ public class Factura {
         System.out.println("Cliente: " + pedido.getCliente().getNombre());
         System.out.println("Total: $" + pedido.getTotal());
         System.out.println("Productos:");
-        pedido.getProductos().forEach(producto -> 
-            System.out.println(" - " + producto.getNombre() + ": $" + producto.getPrecio())
+        pedido.getProductos().forEach(producto ->
+                System.out.println(" - " + producto.getNombre() + ": $" + producto.getPrecio())
         );
         System.out.println("PDF generado correctamente.");
     }

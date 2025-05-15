@@ -1,9 +1,14 @@
 package restaurante.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SistemaNotificaciones {
     private List<Notificacion> notificaciones;
+
+    public SistemaNotificaciones() {
+        this.notificaciones = new ArrayList<>();
+    }
 
     public void notificarCambioEstado(Pedido pedido) {
         Notificacion notificacion = new Notificacion();
