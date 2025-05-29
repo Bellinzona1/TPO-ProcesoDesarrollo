@@ -27,6 +27,8 @@ public class Cupon {
         this.descuento = descuento;
     }
 
+    // Agregar validar
+
     public String getCodigo() {
         return codigo;
     }
