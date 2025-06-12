@@ -8,6 +8,7 @@ public class Producto {
     private String descripcion;
     private double precio;
     private List<String> alergenos;
+    private int tiempoPreparacion; // en minutos
 
     // Constructor
     public Producto(String id, String nombre, String descripcion, double precio, List<String> alergenos) {
@@ -18,6 +19,12 @@ public class Producto {
         this.alergenos = alergenos;
     }
 
+    // Constructor extendido
+    public Producto(String id, String nombre, String descripcion, double precio, List<String> alergenos, int tiempoPreparacion) {
+        this(id, nombre, descripcion, precio, alergenos);
+        this.tiempoPreparacion = tiempoPreparacion;
+    }
+
     // Obtener el precio
     public double obtenerPrecio() {
         return precio;
@@ -26,6 +33,10 @@ public class Producto {
     // Obtener alergenos
     public List<String> getAlergenos() {
         return alergenos;
+    }
+
+    public int obtenerTiempoPreparacion() {
+        return tiempoPreparacion;
     }
 
     // Getters
