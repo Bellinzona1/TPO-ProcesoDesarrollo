@@ -66,22 +66,27 @@ public class Main {
         scanner.nextLine();
         String plataforma = plataformaSel == 1 ? "TOTEM" : "APP";
 
-        System.out.print("¿El pedido es delivery? (s/n): ");
-        boolean esDelivery = scanner.nextLine().trim().equalsIgnoreCase("s");
+        boolean esDelivery = false;
+        if ("APP".equalsIgnoreCase(plataforma)) {
+            System.out.print("¿El pedido es delivery? (s/n): ");
+            esDelivery = scanner.nextLine().trim().equalsIgnoreCase("s");
+        }
 
         Pedido pedido = new Pedido(pedidos.size() + 1, clienteActual, plataforma, esDelivery);
 
-        System.out.println("¿Desea programar el pedido para más tarde? (s/n): ");
-        String programar = scanner.nextLine().trim();
-        if (programar.equalsIgnoreCase("s")) {
-            System.out.print("Ingrese la hora programada (HH:mm): ");
-            String hora = scanner.nextLine();
-            java.time.LocalTime horaProgramada = java.time.LocalTime.parse(hora);
-            java.time.LocalDateTime fechaProgramada = java.time.LocalDateTime.now().withHour(horaProgramada.getHour()).withMinute(horaProgramada.getMinute());
-            if (fechaProgramada.isBefore(java.time.LocalDateTime.now())) {
-                fechaProgramada = fechaProgramada.plusDays(1); // Si la hora ya pasó, es para el día siguiente
+        if ("APP".equalsIgnoreCase(plataforma)) {
+            System.out.println("¿Desea programar el pedido para más tarde? (s/n): ");
+            String programar = scanner.nextLine().trim();
+            if (programar.equalsIgnoreCase("s")) {
+                System.out.print("Ingrese la hora programada (HH:mm): ");
+                String hora = scanner.nextLine();
+                java.time.LocalTime horaProgramada = java.time.LocalTime.parse(hora);
+                java.time.LocalDateTime fechaProgramada = java.time.LocalDateTime.now().withHour(horaProgramada.getHour()).withMinute(horaProgramada.getMinute());
+                if (fechaProgramada.isBefore(java.time.LocalDateTime.now())) {
+                    fechaProgramada = fechaProgramada.plusDays(1); // Si la hora ya pasó, es para el día siguiente
+                }
+                pedido.programarPara(fechaProgramada);
             }
-            pedido.programarPara(fechaProgramada);
         }
 
         System.out.println("Selecciona productos para el pedido:");
