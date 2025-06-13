@@ -16,63 +16,46 @@ public class Main {
 
     public static void main(String[] args) {
         cargarProductos();
-
         int opcion;
         do {
-            System.out.println("\n--- MENÚ PRINCIPAL ---");
-            System.out.println("1. Crear nuevo pedido");
-            System.out.println("2. Ver pedidos");
-            System.out.println("3. Cambiar estado de un pedido");
-            System.out.println("4. Aplicar cupón a un pedido");
-            System.out.println("5. Generar factura de un pedido");
-            System.out.println("6. Cancelar un pedido");
-            System.out.println("7. Agregar productos a un pedido en espera");
-            System.out.println("8. Calcular tiempo estimado de un pedido");
-            System.out.println("9. Salir");
-            System.out.print("Seleccione una opción: ");
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1 -> crearPedido();
-                case 2 -> mostrarPedidos();
-                case 3 -> cambiarEstadoPedido();
-                case 4 -> aplicarCupon();
-                case 5 -> generarFactura();
-                case 6 -> {
-                    System.out.print("Ingrese el número de orden del pedido a cancelar: ");
-                    int numOrdenCancelar = scanner.nextInt();
-                    scanner.nextLine();
-                    Pedido pedidoCancelar = null;
-                    for (Pedido p : pedidos) {
-                        if (p.getNumeroOrden() == numOrdenCancelar) {
-                            pedidoCancelar = p;
-                            break;
-                        }
-                    }
-                    if (pedidoCancelar == null) {
-                        System.out.println("Pedido no encontrado.");
-                    } else {
-                        boolean cancelado = pedidoCancelar.cancelar();
-                        if (cancelado) {
-                            System.out.println("Pedido cancelado. Monto a reembolsar: $" + pedidoCancelar.getMontoReembolsado());
-                        } else {
-                            System.out.println("No se puede cancelar el pedido. Solo se pueden cancelar pedidos en espera o en preparación.");
-                        }
-                    }
+            try {
+                System.out.println("\n--- MENÚ PRINCIPAL ---");
+                System.out.println("1. Crear nuevo pedido");
+                System.out.println("2. Ver pedidos");
+                System.out.println("3. Cambiar estado de un pedido");
+                System.out.println("4. Aplicar cupón a un pedido");
+                System.out.println("5. Generar factura de un pedido");
+                System.out.println("6. Cancelar un pedido");
+                System.out.println("7. Agregar productos a un pedido en espera");
+                System.out.println("8. Calcular tiempo estimado de un pedido");
+                System.out.println("9. Salir");
+                System.out.print("Seleccione una opción: ");
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+                switch (opcion) {
+                    case 1 -> crearPedido();
+                    case 2 -> mostrarPedidos();
+                    case 3 -> cambiarEstadoPedido();
+                    case 4 -> aplicarCupon();
+                    case 5 -> generarFactura();
+                    case 6 -> cancelarPedido();
+                    case 7 -> agregarProductosAEnEspera();
+                    case 8 -> calcularTiempoEstimadoPedido();
+                    case 9 -> System.out.println("Saliendo del sistema...");
+                    default -> System.out.println("Opción inválida. Intente de nuevo.");
                 }
-                case 7 -> agregarProductosAEnEspera();
-                case 8 -> calcularTiempoEstimadoPedido();
-                case 9 -> System.out.println("Saliendo del sistema...");
-                default -> System.out.println("Opción inválida. Intente de nuevo.");
+            } catch (Exception e) {
+                System.out.println("[ALERTA] Error: " + e.getMessage());
+                scanner.nextLine(); // Limpiar buffer en caso de error de input
+                opcion = 0; // Para que no salga del bucle
             }
         } while (opcion != 9);
     }
 
     private static void cargarProductos() {
-        productosDisponibles.add(new Producto("P1", "Hamburguesa", "Carne con pan", 1500.0, List.of("Gluten")));
-        productosDisponibles.add(new Producto("P2", "Pizza", "Mozzarella", 2000.0, List.of("Lácteos")));
-        productosDisponibles.add(new Producto("P3", "Ensalada", "Verduras mixtas", 1000.0, List.of()));
+        productosDisponibles.add(new Producto("P1", "Hamburguesa", "Carne con pan", 1500.0, List.of("Gluten"),10));
+        productosDisponibles.add(new Producto("P2", "Pizza", "Mozzarella", 2000.0, List.of("Lácteos"),16));
+        productosDisponibles.add(new Producto("P3", "Ensalada", "Verduras mixtas", 1000.0, List.of(),5));
     }
 
     private static void crearPedido() {
@@ -185,8 +168,9 @@ public class Main {
         try {
             EstadoPedido estado = EstadoPedido.valueOf(estadoNuevo);
             pedidoService.cambiarEstadoPedido(pedido, estado);
-            new SistemaNotificaciones().notificarCambioEstado(pedido);
-            System.out.println("Estado actualizado.");
+            String mensaje = "El estado de su pedido #" + pedido.getNumeroOrden() + " ha cambiado a: " + estado;
+            notificacionService.notificarCambioEstado(pedido.getCliente(), mensaje);
+            System.out.println("Estado actualizado y notificación enviada.");
         } catch (IllegalArgumentException e) {
             System.out.println("Estado inválido.");
         }
@@ -230,18 +214,17 @@ public class Main {
     }
 
     private static void cancelarPedido() {
-        mostrarPedidos();
-        System.out.print("Ingrese número del pedido a cancelar: ");
-        int numero = scanner.nextInt();
-
-        Pedido pedido = buscarPedidoPorNumero(numero);
-        if (pedido == null) {
-            System.out.println("Pedido no encontrado.");
-            return;
+        System.out.print("Ingrese el número de orden del pedido a cancelar: ");
+        int numOrdenCancelar = scanner.nextInt();
+        scanner.nextLine();
+        Pedido pedidoCancelar = null;
+        for (Pedido p : pedidos) {
+            if (p.getNumeroOrden() == numOrdenCancelar) {
+                pedidoCancelar = p;
+                break;
+            }
         }
-
-        pedidoService.cancelarPedido(pedido);
-        System.out.println("Pedido cancelado.");
+        pedidoService.cancelarPedido(pedidoCancelar, notificacionService);
     }
 
     private static void agregarProductosAEnEspera() {

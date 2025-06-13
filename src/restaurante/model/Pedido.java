@@ -12,9 +12,6 @@ public class Pedido {
     private Cliente cliente;
     private EstadoPedido estado;
     private double total;
-    private Cupon cupon;
-    private Pago pago;
-    private Factura factura;
     private String plataforma; // "TOTEM" o "APP"
     private boolean cuponValidado;
     private boolean notificacionEmpleado;
@@ -68,24 +65,6 @@ public class Pedido {
         }
     }
 
-    // Método para generar la factura
-    public void generarFactura() {
-        // Asegurarse de que el total esté actualizado antes de generar la factura
-        calcularTotal();
-
-        // Crear una factura a partir del pedido
-        factura = new Factura(this);
-
-        // Generar el PDF y enviarlo por correo
-        factura.generarPDF();
-        factura.enviarPorEmail();
-    }
-
-    // Método para agregar productos (sin restricción de estado, para uso interno o inicialización)
-    public void agregarProductoSinRestriccion(Producto producto) {
-        this.productos.add(producto);
-        this.total += producto.obtenerPrecio();
-    }
 
     // Método para agregar productos (con restricción de estado)
     public void agregarProducto(Producto producto) {
@@ -102,9 +81,6 @@ public class Pedido {
         this.esProgramado = true;
     }
 
-    public boolean debeActivarseAhora() {
-        return esProgramado && fechaProgramada != null && java.time.LocalDateTime.now().isAfter(fechaProgramada);
-    }
 
     // Cálculo de tiempo estimado
     public int calcularTiempoEstimado(int pedidosActivosEnLocal, int tiempoRappi) {
@@ -150,16 +126,10 @@ public class Pedido {
 
     // Getters y setters extendidos
     public String getPlataforma() { return plataforma; }
-    public boolean isCuponValidado() { return cuponValidado; }
-    public boolean isNotificacionEmpleado() { return notificacionEmpleado; }
     public java.time.LocalDateTime getFechaProgramada() { return fechaProgramada; }
     public boolean isEsProgramado() { return esProgramado; }
-    public boolean isEsDelivery() { return esDelivery; }
-    public int getTiempoPreparacionEstimado() { return tiempoPreparacionEstimado; }
-    public boolean isCancelado() { return cancelado; }
     public double getMontoReembolsado() { return montoReembolsado; }
-    public void setPago(Pago pago) { this.pago = pago; }
-    public Pago getPago() { return pago; }
+
 
     // Getters
     public List<Producto> getProductos() {

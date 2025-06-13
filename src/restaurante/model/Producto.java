@@ -11,19 +11,15 @@ public class Producto {
     private int tiempoPreparacion; // en minutos
 
     // Constructor
-    public Producto(String id, String nombre, String descripcion, double precio, List<String> alergenos) {
+    public Producto(String id, String nombre, String descripcion, double precio, List<String> alergenos, int tiempoPreparacion) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.alergenos = alergenos;
-    }
-
-    // Constructor extendido
-    public Producto(String id, String nombre, String descripcion, double precio, List<String> alergenos, int tiempoPreparacion) {
-        this(id, nombre, descripcion, precio, alergenos);
         this.tiempoPreparacion = tiempoPreparacion;
     }
+
 
     // Obtener el precio
     public double obtenerPrecio() {
